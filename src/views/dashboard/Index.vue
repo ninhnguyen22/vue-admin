@@ -7,6 +7,8 @@
     <dashboard-core-view />
 
     <dashboard-core-settings />
+
+    <notify />
   </v-app>
 </template>
 
@@ -19,6 +21,7 @@
       DashboardCoreDrawer: () => import('./components/core/Drawer'),
       DashboardCoreSettings: () => import('./components/core/Settings'),
       DashboardCoreView: () => import('./components/core/View'),
+      Notify: () => import('./components/core/Notify'),
     },
 
     data: () => ({
