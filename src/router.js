@@ -10,6 +10,9 @@ export default new Router({
     {
       path: '/',
       component: () => import('@/views/dashboard/Index'),
+      meta: {
+        auth: true,
+      },
       children: [
         // Dashboard
         {
