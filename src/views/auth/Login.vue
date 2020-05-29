@@ -24,28 +24,38 @@
                 <v-spacer />
               </v-toolbar>
               <v-card-text>
-                <v-form>
+                <v-form
+                  ref="form"
+                  v-model="valid"
+                  lazy-validation
+                >
                   <v-text-field
-                    label="Login"
-                    name="login"
+                    v-model="form.email"
+                    label="Email"
+                    name="email"
                     prepend-icon="mdi-email"
                     type="text"
+                    :rules="rules.email"
                   />
 
                   <v-text-field
-                    id="password"
+                    v-model="form.password"
                     label="Password"
                     name="password"
                     prepend-icon="mdi-lock"
                     type="password"
+                    :rules="rules.password"
                   />
                 </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn color="primary">
+                <v-btn
+                  color="primary"
+                  @click="validate"
+                >
                   Login
-                </v-btn>p
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -59,6 +69,26 @@
   export default {
     props: {
       source: String,
+    },
+    data: () => ({
+      valid: true,
+      form: {
+        email: '',
+        password: '',
+      },
+      rules: {
+        email: [
+          v => !!v || 'Email is required',
+        ],
+        password: [
+          v => !!v || 'Password is required',
+        ],
+      },
+    }),
+    methods: {
+      validate () {
+        this.$refs.form.validate()
+      },
     },
   }
 </script>
