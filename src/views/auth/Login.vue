@@ -25,10 +25,14 @@
               </v-toolbar>
               <v-card-text>
                 <v-form
+                  id="main-form"
                   ref="form"
                   v-model="valid"
-                  lazy-validation
+                  @submit.prevent="handleForm"
                 >
+                  <p class="font-italic">
+                    {{ getError }}
+                  </p>
                   <v-text-field
                     v-model="form.email"
                     label="Email"
@@ -52,7 +56,8 @@
                 <v-spacer />
                 <v-btn
                   color="primary"
-                  @click="handleForm"
+                  type="submit"
+                  form="main-form"
                 >
                   Login
                 </v-btn>
@@ -68,6 +73,7 @@
 <script>
   import { login } from '@/api/auth'
   import { setToken } from '../../util/auth'
+  import { getNotify, resetNotify } from '@/util/notify'
 
   export default {
     props: {
@@ -88,14 +94,23 @@
         ],
       },
     }),
+    computed: {
+      getError () {
+        const { show, message } = getNotify()
+        if (show) {
+          return message
+        }
+        return ''
+      },
+    },
     methods: {
       handleForm () {
         if (this.$refs.form.validate()) {
           // api
           login(this.form)
             .then(data => {
-              console.log('data', data)
               if (data.access_token) {
+                resetNotify()
                 setToken(data.access_token)
                 this.$router.push('/')
               }

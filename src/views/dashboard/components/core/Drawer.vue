@@ -141,6 +141,11 @@
           icon: 'mdi-bell',
           to: '/components/notifications',
         },
+        {
+          title: 'Permissions',
+          icon: 'mdi-bell',
+          to: '/permissions',
+        },
       ],
     }),
 

@@ -59,6 +59,12 @@ export default new Router({
           path: 'upgrade',
           component: () => import('@/views/dashboard/Upgrade'),
         },
+        // ADD
+        {
+          name: 'Permissions',
+          path: 'permissions',
+          component: () => import('@/views/dashboard/permissions/Index'),
+        },
       ],
     },
     {
