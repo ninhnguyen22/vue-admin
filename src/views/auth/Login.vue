@@ -52,7 +52,7 @@
                 <v-spacer />
                 <v-btn
                   color="primary"
-                  @click="validate"
+                  @click="handleForm"
                 >
                   Login
                 </v-btn>
@@ -66,6 +66,9 @@
 </template>
 
 <script>
+  import { login } from '@/api/auth'
+  import { setToken } from '../../util/auth'
+
   export default {
     props: {
       source: String,
@@ -86,8 +89,21 @@
       },
     }),
     methods: {
-      validate () {
-        this.$refs.form.validate()
+      handleForm () {
+        if (this.$refs.form.validate()) {
+          // api
+          login(this.form)
+            .then(data => {
+              console.log('data', data)
+              if (data.access_token) {
+                setToken(data.access_token)
+                this.$router.push('/')
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
+        }
       },
     },
   }

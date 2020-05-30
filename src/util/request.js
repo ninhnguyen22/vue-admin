@@ -4,14 +4,14 @@ import { getToken } from '@/util/auth'
 import { sendNotify } from '@/util/notify'
 
 // create an axios instance
-const service = axios.create({
-  baseURL: process.env.APP_BASE_API, // url = base url + request url
+const request = axios.create({
+  baseURL: 'http://ncore.local', // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000, // request timeout
 })
 
 // request interceptor
-service.interceptors.request.use(
+request.interceptors.request.use(
   config => {
     // do something before request is sent
     const token = getToken()
@@ -31,7 +31,7 @@ service.interceptors.request.use(
 )
 
 // response interceptor
-service.interceptors.response.use(
+request.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
@@ -81,4 +81,4 @@ service.interceptors.response.use(
   },
 )
 
-export default service
+export default request
