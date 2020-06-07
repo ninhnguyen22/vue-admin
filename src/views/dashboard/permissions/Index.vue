@@ -29,6 +29,8 @@
 </template>
 
 <script>
+  import { getData } from '@/api/permisison'
+
   export default {
     name: 'PermissionIndex',
 
@@ -40,73 +42,91 @@
           align: 'start',
           value: 'id',
         },
-        { text: 'Name', value: 'name' },
-        { text: 'Created At', value: 'created_at' },
+        {
+          text: 'Name',
+          value: 'name',
+        },
+        {
+          text: 'Created At',
+          value: 'created_at',
+        },
       ],
       items: [],
       options: {},
       total: 0,
       loading: true,
     }),
-    mounted () {
-      this.getDataFromApi()
-        .then(data => {
-          this.items = data.items
-          this.total = data.total
-        })
+    watch: {
+      options: {
+        handler () {
+          this.getDataFromApi()
+            .then(data => {
+              this.items = data.items
+              this.total = data.total
+            })
+        },
+        deep: true,
+      },
     },
     methods: {
       getDataFromApi () {
         this.loading = true
         return new Promise((resolve, reject) => {
           const { sortBy, sortDesc, page, itemsPerPage } = this.options
+          // console.log({ sortBy, sortDesc, page, itemsPerPage })
+          // let items = this.getItems(this.options)
 
-          let items = this.getItems()
-          const total = items.length
+          getData({ sortBy, sortDesc, page, itemsPerPage })
+            .then(data => {
+              if (data) {
+                let items = data
 
-          if (sortBy.length === 1 && sortDesc.length === 1) {
-            items = items.sort((a, b) => {
-              const sortA = a[sortBy[0]]
-              const sortB = b[sortBy[0]]
+                const total = items.length
 
-              if (sortDesc[0]) {
-                if (sortA < sortB) return 1
-                if (sortA > sortB) return -1
-                return 0
-              } else {
-                if (sortA < sortB) return -1
-                if (sortA > sortB) return 1
-                return 0
+                if (sortBy.length === 1 && sortDesc.length === 1) {
+                  items = items.sort((a, b) => {
+                    const sortA = a[sortBy[0]]
+                    const sortB = b[sortBy[0]]
+
+                    if (sortDesc[0]) {
+                      if (sortA < sortB) return 1
+                      if (sortA > sortB) return -1
+                      return 0
+                    } else {
+                      if (sortA < sortB) return -1
+                      if (sortA > sortB) return 1
+                      return 0
+                    }
+                  })
+                }
+
+                if (itemsPerPage > 0) {
+                  items = items.slice((page - 1) * itemsPerPage, page * itemsPerPage)
+                }
+
+                setTimeout(() => {
+                  this.loading = false
+                  resolve({
+                    items,
+                    total,
+                  })
+                }, 1000)
               }
             })
-          }
-
-          if (itemsPerPage > 0) {
-            items = items.slice((page - 1) * itemsPerPage, page * itemsPerPage)
-          }
-
-          setTimeout(() => {
-            this.loading = false
-            resolve({
-              items,
-              total,
+            .catch(err => {
+              console.log(err)
             })
-          }, 1000)
         })
       },
-      getItems () {
-        return [
-          {
-            id: 1,
-            name: 'no1',
-            created_at: 'sd',
-          },
-          {
-            id: 2,
-            name: 'no2',
-            created_at: 'sd',
-          },
-        ]
+      getItems (options) {
+        getData(options)
+          .then(data => {
+            if (data) {
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
       },
     },
   }
